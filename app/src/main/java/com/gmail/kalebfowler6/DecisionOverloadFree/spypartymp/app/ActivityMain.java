@@ -4,14 +4,18 @@ import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
 
 
 public class ActivityMain extends ActionBarActivity {
 
+    private Boolean firstSpyIsMe=false;//gets changed to true onCreate
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        changeFirstSpy(this.getWindow().getDecorView());//set the text of first spy button
     }
 
 
@@ -32,5 +36,18 @@ public class ActivityMain extends ActionBarActivity {
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    public void changeFirstSpy(View v){
+        if(firstSpyIsMe){
+            ((Button)findViewById(R.id.buttonSpy)).setText("First Spy\n---->");
+            firstSpyIsMe=false;
+
+        }
+        else
+        {
+            ((Button)findViewById(R.id.buttonSpy)).setText("First Spy\n<----");
+            firstSpyIsMe=true;
+        }
     }
 }
