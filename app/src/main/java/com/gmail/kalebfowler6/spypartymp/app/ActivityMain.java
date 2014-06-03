@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -35,6 +36,7 @@ public class ActivityMain extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        ((TextView)findViewById(R.id.textScore)).setText("");//erases "score" from the score textbox
         fillSpinner();
         changeFirstSpy(this.getWindow().getDecorView());//set the text of first spy button
         prepareScoreHistory();
@@ -113,18 +115,22 @@ public class ActivityMain extends ActionBarActivity {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             //when we receive a click
             public void onItemClick(AdapterView<?> a, View v, int position, long id) {
-                AlertDialog.Builder adb = new AlertDialog.Builder(ActivityMain.this);
-                adb.setTitle("Delete?");
-                adb.setMessage("Are you sure you want to delete \"" + scoreHistory.get(position)+"\"?");
-                final int positionToRemove = position;
-                adb.setNegativeButton("No", null);
-                adb.setPositiveButton("Yes", new AlertDialog.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        updateScoreFromItem(scoreHistory.remove(positionToRemove));
-                        adapterList.notifyDataSetChanged();
-                    }
-                });
-                adb.show();
+                if(position==0) {//only allow the removal of the first element
+                    AlertDialog.Builder adb = new AlertDialog.Builder(ActivityMain.this);
+                    adb.setTitle("Delete?");
+                    adb.setMessage("Are you sure you want to delete \"" + scoreHistory.get(position) + "\"?");
+                    final int positionToRemove = position;
+                    adb.setNegativeButton("No", null);
+                    adb.setPositiveButton("Yes", new AlertDialog.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            updateScoreFromItem(scoreHistory.remove(positionToRemove));
+                            if(scoreHistory.size()==0)
+                                resetAll();
+                            adapterList.notifyDataSetChanged();
+                        }
+                    });
+                    adb.show();
+                }
             }
         });
     }
@@ -140,9 +146,9 @@ public class ActivityMain extends ActionBarActivity {
         if(editMode)//if we are starting a brand new game right now
         {
             //disable a bunch of stuff that should not change through the course of a game
-            ((EditText) findViewById(R.id.editPlayer1)).setEnabled(false);
-            ((EditText) findViewById(R.id.editPlayer2)).setEnabled(false);
-            ((Button)findViewById(R.id.buttonSpy)).setEnabled(false);
+            (findViewById(R.id.editPlayer1)).setEnabled(false);
+            (findViewById(R.id.editPlayer2)).setEnabled(false);
+            (findViewById(R.id.buttonSpy)).setEnabled(false);
             editMode=false;
         }
 
@@ -215,9 +221,57 @@ public class ActivityMain extends ActionBarActivity {
         int end= item.indexOf(" points.");//end point is exclusive, and indexOf returns the start of the string, so no change
         int scoreDiff=Integer.parseInt(item.substring(start,end));
 
-        //now, to add or subtract?
 
-        updateScore();
+        //now, to add or subtract?
+        //first, need to get names of me and opponent
+        String temp=((EditText) findViewById(R.id.editPlayer1)).getText().toString();
+        String myName;
+        String yourName;
+        if(temp.length()>0)
+            myName=temp;
+        else
+            myName="You";
+        temp=((EditText) findViewById(R.id.editPlayer2)).getText().toString();
+        if(temp.length()>0)
+            yourName=temp;
+        else
+            yourName="Opponent";
+        start=0;
+        end=item.indexOf(" scored ");
+        temp=item.substring(start,end);
+        if(myName.contentEquals(temp))
+        {
+            //if I scored (I was spy), score was positive
+            totalScore-=scoreDiff;//so subtract the score
+
+            //current state will tell us if we switched last round
+            if(currentSpyIsMe)//then we didn't switch last round
+                switchThisRound=false;
+            else
+                switchThisRound=true;
+
+            currentSpyIsMe=true;
+        }
+        else if(yourName.contentEquals(temp))
+        {
+            //if opponent scored (opponent was spy), score was negative
+            totalScore+=scoreDiff;//so add the score
+
+            //current state will tell us if we switched last round
+            if(!currentSpyIsMe)//then we didn't switch last round
+                switchThisRound=false;
+            else
+                switchThisRound=true;
+
+            currentSpyIsMe=false;
+        }
+        else
+        {
+            Log.e("SpyParty-M=P","Error: don't know my name or opponent's name when removing");
+        }
+
+        updateScore();//show score
+        notifySpinner();//make sure the correct person can enter score
     }
 
     public void updateScore(){
@@ -230,4 +284,17 @@ public class ActivityMain extends ActionBarActivity {
             score+=" ahead.";
         ((TextView)findViewById(R.id.textScore)).setText(score);
     }
+
+    public void resetAll(){
+        (findViewById(R.id.editPlayer1)).setEnabled(true);
+        (findViewById(R.id.editPlayer2)).setEnabled(true);
+        (findViewById(R.id.buttonSpy)).setEnabled(true);
+        editMode=true;
+        changeFirstSpy(this.getWindow().getDecorView());
+    }
+    public void resetAll(View v){
+        scoreHistory.clear();
+        adapterList.notifyDataSetChanged();
+        resetAll();
+    }//necessary for button's onClick
 }
