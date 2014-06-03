@@ -2,19 +2,24 @@ package com.gmail.kalebfowler6.DecisionOverloadFree.spypartymp.app;
 
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.Spinner;
 
 
 public class ActivityMain extends ActionBarActivity {
 
-    private Boolean firstSpyIsMe=false;//gets changed to true onCreate
+    private Boolean firstSpyIsMe=false;//Who is the first spy?  (gets changed to true in onCreate() )
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        Log.e("SP-MP", "crash0");
+        //fillSpinner();
         changeFirstSpy(this.getWindow().getDecorView());//set the text of first spy button
     }
 
@@ -40,14 +45,37 @@ public class ActivityMain extends ActionBarActivity {
 
     public void changeFirstSpy(View v){
         if(firstSpyIsMe){
-            ((Button)findViewById(R.id.buttonSpy)).setText("First Spy\n---->");
+            ((Button)findViewById(R.id.buttonSpy)).setText("First Spy\n----->");
             firstSpyIsMe=false;
 
         }
         else
         {
-            ((Button)findViewById(R.id.buttonSpy)).setText("First Spy\n<----");
+            ((Button)findViewById(R.id.buttonSpy)).setText("First Spy\n<-----");
             firstSpyIsMe=true;
         }
+        //notifySpinner();//change layout so the spinner (to add score) is under the current spy
+    }
+
+    public void fillSpinner(){
+        Log.e("SP-MP", "crash1");
+        //points spinner
+        Spinner spinnerPoints = (Spinner) findViewById(R.id.spinnerPoints);
+        String[] listPoints=new String[SettingsHelper.getMaxMissions()];
+        Log.e("SP-MP", "crash2");
+        for (int i=0;i<=SettingsHelper.getMaxMissions();i++){
+            listPoints[i]="+"+i;}
+        Log.e("SP-MP", "crash3");
+        // Create an ArrayAdapter using the string array and a default spinner layout
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,  android.R.layout.simple_spinner_dropdown_item, listPoints);
+        // Specify the layout to use when the list of choices appears
+        //adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);//this line fucked it up
+        // Apply the adapter to the spinner
+        spinnerPoints.setAdapter(adapter);
+        //spinnerPoints.setSelection(0);
+    }
+
+    public void notifySpinner(){//change layout so the spinner (to add score) is under the current spy
+
     }
 }
