@@ -1,6 +1,6 @@
 SpyParty-M=P
 ============
-This is a quick and simple Android Application for the Missions=Points variant of SpyParty
+This is a quick and simple Android Application for the Missions=Points variant of SpyParty.
 
 ToDo:
 Finish handling what to do when removing an error in history
