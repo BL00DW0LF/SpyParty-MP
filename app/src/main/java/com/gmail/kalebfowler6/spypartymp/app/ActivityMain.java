@@ -1,10 +1,9 @@
-package com.gmail.kalebfowler6.DecisionOverloadFree.spypartymp.app;
+package com.gmail.kalebfowler6.spypartymp.app;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -15,6 +14,8 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
+
+import com.gmail.kalebfowler6.spypartymp.app.R;
 
 import java.util.ArrayList;
 import java.util.List;
