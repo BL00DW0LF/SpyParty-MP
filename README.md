@@ -5,6 +5,4 @@ This is a quick and simple Android Application for the Missions=Points variant o
 
 ToDo:
 
-Create Icons/screenshots required by Google Play
-
-Set application name
+Help/about page
