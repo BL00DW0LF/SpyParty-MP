@@ -4,10 +4,13 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.text.InputFilter;
+import android.text.method.DigitsKeyListener;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -30,6 +33,7 @@ public class ActivityMain extends ActionBarActivity {
     private List<String> scoreHistory;
     private ArrayAdapter adapterList;//want this globally, so it never disappears
     private int totalScore=0;
+    private int winThreshold;//score needed to win
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -118,7 +122,7 @@ public class ActivityMain extends ActionBarActivity {
                 if(position==0) {//only allow the removal of the first element
                     AlertDialog.Builder adb = new AlertDialog.Builder(ActivityMain.this);
                     adb.setTitle("Delete?");
-                    adb.setMessage("Are you sure you want to delete \"" + scoreHistory.get(position) + "\"?");
+                    adb.setMessage("Are you sure you want to remove \"" + scoreHistory.get(position) + "\"?");
                     final int positionToRemove = position;
                     adb.setNegativeButton("No", null);
                     adb.setPositiveButton("Yes", new AlertDialog.OnClickListener() {
@@ -127,6 +131,12 @@ public class ActivityMain extends ActionBarActivity {
                             if(scoreHistory.size()==0)
                                 resetAll();
                             adapterList.notifyDataSetChanged();
+
+                            //disable everthing normally disabled to handle case when you made a mistake on the winning game, and you undo it
+                            (findViewById(R.id.editPlayer1)).setEnabled(false);
+                            (findViewById(R.id.editPlayer2)).setEnabled(false);
+                            (findViewById(R.id.buttonSpy)).setEnabled(false);
+                            editMode=false;
                         }
                     });
                     adb.show();
@@ -144,13 +154,7 @@ public class ActivityMain extends ActionBarActivity {
         String temp;
 
         if(editMode)//if we are starting a brand new game right now
-        {
-            //disable a bunch of stuff that should not change through the course of a game
-            (findViewById(R.id.editPlayer1)).setEnabled(false);
-            (findViewById(R.id.editPlayer2)).setEnabled(false);
-            (findViewById(R.id.buttonSpy)).setEnabled(false);
-            editMode=false;
-        }
+            startingNewGame();
 
         //get myName and yourName
         temp=((EditText) findViewById(R.id.editPlayer1)).getText().toString();
@@ -191,16 +195,18 @@ public class ActivityMain extends ActionBarActivity {
         else
             history+=" ahead.";
 
-
-
-        if(switchThisRound)//are we supposed to switch this round
-            switchSpy();
-        else
-            switchThisRound=true;//if not, then we'll switch next round
-
         updateScore();//totalScore has changed, display it
         scoreHistory.add(0,history);//add history from the top
         adapterList.notifyDataSetChanged();//update the listview
+
+        if(switchThisRound)//are we supposed to switch this round
+            switchSpy();
+        else{//it's the start of a new set, check score threshold
+            if (Math.abs(totalScore)>=winThreshold){
+                notifyWinner();
+            }
+            switchThisRound=true;//if not, then we'll switch next round
+        }
     }
 
     public void switchSpy(){
@@ -236,6 +242,7 @@ public class ActivityMain extends ActionBarActivity {
             yourName=temp;
         else
             yourName="Opponent";
+
         start=0;
         end=item.indexOf(" scored ");
         temp=item.substring(start,end);
@@ -276,7 +283,7 @@ public class ActivityMain extends ActionBarActivity {
 
     public void updateScore(){
         String score="You are "+Math.abs(totalScore)+" point";
-        if(totalScore!=1 && totalScore!=-1)
+        if(!(Math.abs(totalScore)==1))
             score+="s";
         if (totalScore<0)
             score+=" behind.";
@@ -293,8 +300,71 @@ public class ActivityMain extends ActionBarActivity {
         changeFirstSpy(this.getWindow().getDecorView());
     }
     public void resetAll(View v){
-        scoreHistory.clear();
+        scoreHistory.clear();//won't need to do this stuff when we remove the last element, so it can be here instead of in resetAll()
         adapterList.notifyDataSetChanged();
         resetAll();
     }//necessary for button's onClick
+
+    public void startingNewGame(){
+        //disable a bunch of stuff that should not change through the course of a game
+        (findViewById(R.id.editPlayer1)).setEnabled(false);
+        (findViewById(R.id.editPlayer2)).setEnabled(false);
+        (findViewById(R.id.buttonSpy)).setEnabled(false);
+        editMode=false;
+        scoreHistory.clear();
+        adapterList.notifyDataSetChanged();
+
+        //show a popup asking for the score threshold
+        winThreshold=999;//overwrite old one for safety
+        AlertDialog.Builder adb = new AlertDialog.Builder(ActivityMain.this);
+        adb.setTitle("Set the score difference needed to win:");
+        final EditText input = new EditText(this);
+        input.setFilters(new InputFilter[] {
+                // Maximum 2 characters.
+                new InputFilter.LengthFilter(3),
+                // Digits only.
+                DigitsKeyListener.getInstance(),  // Not strictly needed, IMHO.
+        });
+
+        // Digits only & use numeric soft-keyboard.
+        input.setKeyListener(DigitsKeyListener.getInstance());
+        adb.setView(input);
+        adb.setPositiveButton("Ok", new AlertDialog.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+                if(input.getText().toString().length()==0)
+                    winThreshold=0;
+                else
+                    winThreshold=Integer.parseInt(input.getText().toString());
+                //need to hide the keyboard, it doesn't like me closing on it
+                getWindow().setSoftInputMode(
+                        WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+            }
+        });
+        adb.show();
+    }
+
+    public void notifyWinner(){
+        resetAll();//keep history
+        TextView txtScore=(TextView)findViewById(R.id.textScore);
+        String winnerName="";
+        String msg;
+
+        //get name of winner
+        if (totalScore>0){//I won
+            winnerName=((EditText) findViewById(R.id.editPlayer1)).getText().toString();
+            if(winnerName.length()==0)
+                winnerName="You";
+        }
+        else if (totalScore<0){//opponent won
+            winnerName=((EditText) findViewById(R.id.editPlayer2)).getText().toString();
+            if(winnerName.length()==0)
+                winnerName="Opponent";
+        }
+
+        if (totalScore==0)
+            msg="You're trying to break this, aren't you?";
+        else
+            msg=""+winnerName+" won at "+winThreshold;
+        txtScore.setText(msg);
+    }
 }
