@@ -63,24 +63,32 @@
     <Spinner
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/spinnerPoints"
+        android:id="@+id/spinnerMyPoints"
         android:layout_below="@+id/buttonSpy"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
+    <Spinner
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/spinnerYourPoints"
+        android:layout_below="@+id/buttonSpy"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true" />
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Score Round"
         android:id="@+id/buttonScore"
-        android:layout_alignBottom="@+id/spinnerPoints"
-        android:layout_centerHorizontal="true" />
+        android:layout_alignBottom="@+id/spinnerMyPoints"
+        android:layout_centerHorizontal="true"
+        android:onClick="scoreRound" />
 
     <ListView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/listView"
-        android:layout_below="@+id/spinnerPoints"
+        android:layout_below="@+id/buttonScore"
         android:layout_centerHorizontal="true"
         android:layout_above="@+id/textScore" />
 
