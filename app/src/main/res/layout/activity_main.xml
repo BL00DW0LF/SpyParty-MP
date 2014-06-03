@@ -9,6 +9,17 @@
     tools:context=".ActivityMain">
 
 
+    <!-- Dummy item to prevent first EditText from receiving focus and popping up keyboard-->
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/linearLayout_focus"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:layout_width="0px"
+        android:layout_height="0px"
+        android:orientation="vertical"/>
+
+
     <EditText
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

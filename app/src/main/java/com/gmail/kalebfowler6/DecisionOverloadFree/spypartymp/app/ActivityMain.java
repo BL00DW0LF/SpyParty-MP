@@ -18,8 +18,8 @@ public class ActivityMain extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Log.e("SP-MP", "crash0");
-        //fillSpinner();
+
+        fillSpinner();
         changeFirstSpy(this.getWindow().getDecorView());//set the text of first spy button
     }
 
@@ -54,18 +54,15 @@ public class ActivityMain extends ActionBarActivity {
             ((Button)findViewById(R.id.buttonSpy)).setText("First Spy\n<-----");
             firstSpyIsMe=true;
         }
-        //notifySpinner();//change layout so the spinner (to add score) is under the current spy
+        notifySpinner();//change layout so the spinner (to add score) is under the current spy
     }
 
     public void fillSpinner(){
-        Log.e("SP-MP", "crash1");
         //points spinner
         Spinner spinnerPoints = (Spinner) findViewById(R.id.spinnerPoints);
-        String[] listPoints=new String[SettingsHelper.getMaxMissions()];
-        Log.e("SP-MP", "crash2");
+        String[] listPoints=new String[SettingsHelper.getMaxMissions()+1];
         for (int i=0;i<=SettingsHelper.getMaxMissions();i++){
             listPoints[i]="+"+i;}
-        Log.e("SP-MP", "crash3");
         // Create an ArrayAdapter using the string array and a default spinner layout
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,  android.R.layout.simple_spinner_dropdown_item, listPoints);
         // Specify the layout to use when the list of choices appears
