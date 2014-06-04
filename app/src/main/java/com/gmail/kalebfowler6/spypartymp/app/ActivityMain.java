@@ -296,11 +296,13 @@ public class ActivityMain extends ActionBarActivity {
         ((TextView)findViewById(R.id.textScore)).setText(score);
     }
 
-    public void resetAll(){
+    public void resetAll(){//called from below, but also called when the last element is removed
         (findViewById(R.id.editPlayer1)).setEnabled(true);
         (findViewById(R.id.editPlayer2)).setEnabled(true);
         (findViewById(R.id.buttonSpy)).setEnabled(true);
         editMode=true;
+        winThreshold=999;
+        ((TextView)findViewById(R.id.textScore)).setText("");
         changeFirstSpy(this.getWindow().getDecorView());
     }
     public void resetAll(View v){
