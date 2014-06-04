@@ -5,4 +5,4 @@ This is a quick and simple Android Application for the Missions=Points variant o
 
 ToDo:
 
-Help/about page
+Eventually split Main page into setup/gameplay windows
