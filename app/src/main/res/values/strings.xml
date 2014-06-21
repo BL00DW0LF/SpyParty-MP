@@ -14,5 +14,8 @@
             \n\n
             This is an open-source App, check out BL00DW0LF on GitHub.
     </string>
+    <string name="menu_item_help">Help</string>
+    <string name="menu_item_reset">Reset App</string>
+    <string name="reset_app_dialog_title">Reset App Data?</string>
 
 </resources>

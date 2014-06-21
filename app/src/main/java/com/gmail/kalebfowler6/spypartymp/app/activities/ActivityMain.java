@@ -1,10 +1,9 @@
-package com.gmail.kalebfowler6.spypartymp.app;
+package com.gmail.kalebfowler6.spypartymp.app.activities;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
 import android.text.InputFilter;
 import android.text.method.DigitsKeyListener;
 import android.util.Log;
@@ -20,11 +19,14 @@ import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.gmail.kalebfowler6.spypartymp.app.R;
+import com.gmail.kalebfowler6.spypartymp.app.utils.SettingsHelper;
+
 import java.util.ArrayList;
 import java.util.List;
 
 
-public class ActivityMain extends ActionBarActivity {
+public class ActivityMain extends BaseActivity {
 
     private Boolean currentSpyIsMe=false;//Who is the first spy?  (gets changed to true in onCreate() )
     private Boolean switchThisRound=true;//whether spy/snipers switch in this pair
@@ -43,14 +45,6 @@ public class ActivityMain extends ActionBarActivity {
         fillSpinner();
         changeFirstSpy(this.getWindow().getDecorView());//set the text of first spy button
         prepareScoreHistory();
-    }
-
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.activity_main, menu);
-        return true;
     }
 
     @Override
