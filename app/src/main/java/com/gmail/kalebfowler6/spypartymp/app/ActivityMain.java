@@ -3,8 +3,8 @@ package com.gmail.kalebfowler6.spypartymp.app;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
 import android.text.InputFilter;
 import android.text.method.DigitsKeyListener;
 import android.util.Log;
@@ -19,8 +19,6 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
-
-import com.gmail.kalebfowler6.spypartymp.app.R;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -88,8 +86,8 @@ public class ActivityMain extends ActionBarActivity {
         Spinner spinnerMyPoints = (Spinner) findViewById(R.id.spinnerMyPoints);
         Spinner spinnerYourPoints = (Spinner) findViewById(R.id.spinnerYourPoints);
 
-        String[] listPoints=new String[SettingsHelper.getMaxMissions()+1];
-        for (int i=0;i<=SettingsHelper.getMaxMissions();i++){
+        String[] listPoints=new String[SettingsHelper.maxMissions+1];
+        for (int i=0;i<=SettingsHelper.maxMissions;i++){
             listPoints[i]="+"+i;}
 
         // Create an ArrayAdapter using the string array and a layout
