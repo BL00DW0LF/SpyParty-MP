@@ -47,7 +47,7 @@ public class ActivitySetup extends BaseActivity implements OnSharedPreferenceCha
 
         // set view listeners, adapters etc.
         mOpponentNamesAdapter = new ArrayAdapter<String>(
-                this, android.R.layout.simple_dropdown_item_1line, mSavedOpponentNames);
+                this, android.R.layout.simple_dropdown_item_1line, new ArrayList<String>());
         mOpponentName.setAdapter(mOpponentNamesAdapter);
 
         mStartMatch.setOnClickListener(startMatchClickListener);
@@ -60,6 +60,8 @@ public class ActivitySetup extends BaseActivity implements OnSharedPreferenceCha
     @Override
     protected void onResume() {
         super.onResume();
+
+        Log.d(TAG, "onResume hit");
         restorePlayerName();
         restoreOpponentNames();
     }
@@ -85,6 +87,10 @@ public class ActivitySetup extends BaseActivity implements OnSharedPreferenceCha
     private void savePlayerName() {
         String enteredName = mPlayerName.getText().toString().trim();
         mPrefs.edit().putString(PLAYER_NAME_KEY, enteredName).commit();
+
+        if (!"".equals(enteredName)) {
+            Log.d(TAG, "Saving player name: " + enteredName);
+        }
     }
 
     private void saveOpponentName() {
@@ -93,7 +99,10 @@ public class ActivitySetup extends BaseActivity implements OnSharedPreferenceCha
 
             if (!"".equals(enteredName)) {
                 HashSet<String> savedOpponentNames = new HashSet<String>(mPrefs.getStringSet(OPPONENT_NAMES_KEY, new HashSet<String>()));
-                savedOpponentNames.add(enteredName);
+
+                if (!savedOpponentNames.contains(enteredName)) {
+                    savedOpponentNames.add(enteredName);
+                }
 
                 Log.d(TAG, "Saving opponent names: " + savedOpponentNames);
 
@@ -113,14 +122,12 @@ public class ActivitySetup extends BaseActivity implements OnSharedPreferenceCha
 
     private void restoreOpponentNames() {
         if (Build.VERSION.SDK_INT >= 11) {
+
             mSavedOpponentNames.clear();
-            mOpponentNamesAdapter.clear();
-
             HashSet<String> savedOpponentNames = (HashSet<String>) mPrefs.getStringSet(OPPONENT_NAMES_KEY, new HashSet<String>());
+            mSavedOpponentNames = new ArrayList<String>(savedOpponentNames);
 
-            for (String name : savedOpponentNames) {
-                mSavedOpponentNames.add(name);
-            }
+            mOpponentNamesAdapter.clear();
             mOpponentNamesAdapter.addAll(mSavedOpponentNames);
 
             Log.d(TAG, "Loaded opponent names: " + mSavedOpponentNames);
