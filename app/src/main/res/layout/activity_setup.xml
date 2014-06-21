@@ -20,7 +20,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:layout_marginBottom="15dp"
             android:text="Enter your name:" />
 
         <EditText
@@ -37,7 +36,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:layout_marginBottom="15dp"
             android:text="Enter opponent name:" />
 
         <AutoCompleteTextView
@@ -50,19 +48,48 @@
             android:singleLine="true"
             android:imeOptions="actionNext" />
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1" />
-
-        <Button
-            android:id="@+id/startMatch"
+        <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
+            android:text="Enter # points ahead to win:" />
+
+        <EditText
+            android:id="@+id/winPoints"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="30dp"
+            android:gravity="center"
+            android:inputType="number"
+            android:maxLines="1"
+            android:singleLine="true"
+            android:maxLength="2" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="15dp"
+            android:text="Select your starting role:" />
+
+        <ToggleButton
+            android:id="@+id/spyRole"
+            android:layout_width="160dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="60dp"
             android:background="@drawable/green_button"
-            android:paddingLeft="30dp"
-            android:paddingRight="30dp"
+            android:textColor="#FFF"
+            android:textOff="@string/spy"
+            android:textOn="@string/sniper"
+            android:textSize="18sp" />
+
+        <Button
+            android:id="@+id/startMatch"
+            android:layout_width="160dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:background="@drawable/green_button"
             android:textColor="#FFF"
             android:text="Start Match" />
 

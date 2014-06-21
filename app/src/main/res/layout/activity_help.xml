@@ -2,6 +2,5 @@
     android:id="@+id/webView"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="30dp"
     android:scrollbars="none"
     android:background="#FFF" />

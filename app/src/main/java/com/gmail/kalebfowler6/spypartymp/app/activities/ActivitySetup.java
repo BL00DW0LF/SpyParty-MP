@@ -9,7 +9,9 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.gmail.kalebfowler6.spypartymp.app.R;
 import com.gmail.kalebfowler6.spypartymp.app.models.Match;
@@ -19,6 +21,8 @@ import java.util.ArrayList;
 import java.util.HashSet;
 
 import static android.content.SharedPreferences.OnSharedPreferenceChangeListener;
+import static android.widget.Toast.LENGTH_SHORT;
+import static com.gmail.kalebfowler6.spypartymp.app.models.Match.Role.SPY;
 
 /**
  * Created by stuart on 6/20/14.
@@ -28,8 +32,9 @@ public class ActivitySetup extends BaseActivity implements OnSharedPreferenceCha
     public static final String TAG = "ActivitySetup";
     public static final String INITIALIZED_MATCH = "Initialized Match";
 
-    private TextView mPlayerName;
+    private EditText mPlayerName;
     private AutoCompleteTextView mOpponentName;
+    private EditText mWinPoints;
 
     private ArrayList<String> mSavedOpponentNames = new ArrayList<String>();
     private ArrayAdapter<String> mOpponentNamesAdapter;
@@ -41,16 +46,16 @@ public class ActivitySetup extends BaseActivity implements OnSharedPreferenceCha
         setContentView(R.layout.activity_setup);
 
         // get view references
-        mPlayerName = (TextView) findViewById(R.id.playerName);
+        mPlayerName = (EditText) findViewById(R.id.playerName);
         mOpponentName = (AutoCompleteTextView) findViewById(R.id.opponentName);
-        Button mStartMatch = (Button) findViewById(R.id.startMatch);
+        mWinPoints = (EditText) findViewById(R.id.winPoints);
+        Button startMatch = (Button) findViewById(R.id.startMatch);
 
         // set view listeners, adapters etc.
-        mOpponentNamesAdapter = new ArrayAdapter<String>(
-                this, android.R.layout.simple_dropdown_item_1line, new ArrayList<String>());
+        mOpponentNamesAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line);
         mOpponentName.setAdapter(mOpponentNamesAdapter);
 
-        mStartMatch.setOnClickListener(startMatchClickListener);
+        startMatch.setOnClickListener(startMatchClickListener);
 
         // initialize shared prefs
         mPrefs = getSharedPreferences(SettingsHelper.SHARED_PREFS_FILE_KEY, MODE_PRIVATE);
@@ -60,8 +65,6 @@ public class ActivitySetup extends BaseActivity implements OnSharedPreferenceCha
     @Override
     protected void onResume() {
         super.onResume();
-
-        Log.d(TAG, "onResume hit");
         restorePlayerName();
         restoreOpponentNames();
     }
@@ -69,18 +72,24 @@ public class ActivitySetup extends BaseActivity implements OnSharedPreferenceCha
     private View.OnClickListener startMatchClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            savePlayerName();
-            saveOpponentName();
+            if (isAllDataValid()) {
 
-            Match match = Match.getMatch()
-                    .setPlayerName(mPlayerName.getText().toString())
-                    .setOpponentName(mOpponentName.getText().toString())
-                    .setWinDifference(0)
-                    .setFirstSpy(Match.Spy.PLAYER);
+                savePlayerName();
+                saveOpponentName();
 
-            Intent intent = new Intent(ActivitySetup.this, ActivityMain.class);
+                Match match = Match.getMatch()
+                        .setPlayerName(mPlayerName.getText().toString())
+                        .setOpponentName(mOpponentName.getText().toString())
+                        .setWinDifference(0)
+                        .setFirstRole(SPY);
+
+                Intent intent = new Intent(ActivitySetup.this, ActivityMain.class);
 //            intent.putExtra(INITIALIZED_MATCH, match);
-            startActivity(intent);
+                startActivity(intent);
+
+            } else {
+                Toast.makeText(ActivitySetup.this, "All fields are required", LENGTH_SHORT).show();
+            }
         }
     };
 
@@ -142,5 +151,20 @@ public class ActivitySetup extends BaseActivity implements OnSharedPreferenceCha
             mOpponentName.setText("");
             mOpponentNamesAdapter.clear();
         }
+    }
+
+    private boolean isAllDataValid() {
+        return isViewDataValid(mPlayerName) && isViewDataValid(mOpponentName) && isViewDataValid(mWinPoints);
+    }
+
+    private boolean isViewDataValid(TextView v) {
+        boolean b = !"".equals(v.getText().toString().trim());
+
+        if (!b) {
+            v.setText("");
+            v.requestFocus();
+        }
+
+        return !"".equals(v.getText().toString().trim());
     }
 }

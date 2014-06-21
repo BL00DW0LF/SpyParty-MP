@@ -1,32 +1,30 @@
 package com.gmail.kalebfowler6.spypartymp.app.models;
 
-import static com.gmail.kalebfowler6.spypartymp.app.models.Match.Spy.OPPONENT;
-import static com.gmail.kalebfowler6.spypartymp.app.models.Match.Spy.PLAYER;
-
 /**
  * Created by stuart on 6/21/14.
  */
 public class Match {
 
-    public enum Spy {
-        PLAYER,
-        OPPONENT
+    public enum Role {
+        SPY,
+        SNIPER
     }
 
     // setup variables
     private String playerName;
     private String opponentName;
     private int winDifference;
-    private Spy[] spyOrder;
+    private Role firstRole;
 
     // match variables
     private int roundNumber;
-    private Spy currentSpy;
+    private Role currentRole;
 
     // single Match instance
     private static Match match;
 
-    private Match() { }
+    private Match() {
+    }
 
     public static Match getMatch() {
         if (match != null) {
@@ -42,13 +40,13 @@ public class Match {
         match.playerName = "";
         match.opponentName = "";
         match.winDifference = 0;
-        match.spyOrder = new Spy[]{};
+        match.firstRole = null;
         match.roundNumber = 0;
-        match.currentSpy = null;
+        match.currentRole = null;
     }
 
-    public Spy getCurrentSpy() {
-        return currentSpy;
+    public Role getCurrentRole() {
+        return currentRole;
     }
 
     public Match setWinDifference(int winDifference) {
@@ -66,23 +64,16 @@ public class Match {
         return this;
     }
 
-    public Match setFirstSpy(Spy spy) {
-        switch (spy) {
-            case PLAYER:
-                this.spyOrder = new Spy[]{PLAYER, OPPONENT};
-                return this;
-            case OPPONENT:
-                this.spyOrder = new Spy[]{OPPONENT, PLAYER};
-                return this;
-        }
-        return null;
+    public Match setFirstRole(Role role) {
+        currentRole = role;
+        return this;
     }
 
-    private Spy getSpyForRoundNumber(int roundNumber) {
+    private Role getRoleForRoundNumber(int roundNumber) {
         if (roundNumber % 4 == 0 || roundNumber % 4 == 3) {
-            return spyOrder[0];
+            return firstRole;
         } else {
-            return spyOrder[1];
+            return Role.values()[(firstRole.ordinal() + 1) % 2];
         }
     }
 
