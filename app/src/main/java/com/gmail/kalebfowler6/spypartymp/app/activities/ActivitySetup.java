@@ -14,7 +14,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.gmail.kalebfowler6.spypartymp.app.R;
-import com.gmail.kalebfowler6.spypartymp.app.models.Match;
 import com.gmail.kalebfowler6.spypartymp.app.utils.SettingsHelper;
 
 import java.util.ArrayList;
@@ -22,7 +21,6 @@ import java.util.HashSet;
 
 import static android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import static android.widget.Toast.LENGTH_SHORT;
-import static com.gmail.kalebfowler6.spypartymp.app.models.Match.Role.SPY;
 
 /**
  * Created by stuart on 6/20/14.
@@ -77,13 +75,13 @@ public class ActivitySetup extends BaseActivity implements OnSharedPreferenceCha
                 savePlayerName();
                 saveOpponentName();
 
-                Match match = Match.getMatch()
-                        .setPlayerName(mPlayerName.getText().toString())
-                        .setOpponentName(mOpponentName.getText().toString())
-                        .setWinDifference(0)
-                        .setFirstRole(SPY);
+//                Match match = Match.getMatch()
+//                        .setPlayerName(mPlayerName.getText().toString())
+//                        .setOpponentName(mOpponentName.getText().toString())
+//                        .setWinDifference(0)
+//                        .setFirstRole(SPY);
 
-                Intent intent = new Intent(ActivitySetup.this, ActivityMain.class);
+                Intent intent = new Intent(ActivitySetup.this, ActivityMatch.class);
 //            intent.putExtra(INITIALIZED_MATCH, match);
                 startActivity(intent);
 

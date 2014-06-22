@@ -1,79 +1,121 @@
 package com.gmail.kalebfowler6.spypartymp.app.models;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import static com.gmail.kalebfowler6.spypartymp.app.models.Match.Role.SPY;
+
 /**
  * Created by stuart on 6/21/14.
  */
 public class Match {
 
     public enum Role {
-        SPY,
-        SNIPER
+        SPY("Spy"),
+        SNIPER("Sniper");
+
+        private String displayString;
+
+        Role(String displayString) {
+            this.displayString = displayString;
+        }
+
+        @Override
+        public String toString() {
+            return displayString;
+        }
     }
 
     // setup variables
-    private String playerName;
-    private String opponentName;
-    private int winDifference;
-    private Role firstRole;
+    private String mPlayerName;
+    private String mOpponentName;
+    private int mWinDifference;
+    private Role mFirstRole;
 
     // match variables
-    private int roundNumber;
-    private Role currentRole;
+    private int mRoundNumber;
+    private Role mCurrentRole;
+    private int mCurrentDifference = 0;
+    private List<Round> mRounds = new ArrayList<Round>();
 
-    // single Match instance
-    private static Match match;
-
-    private Match() {
+    public Match(String playerName, String opponentName, int winDifference, Role firstRole) {
+        mPlayerName = playerName;
+        mOpponentName = opponentName;
+        mWinDifference = winDifference;
+        mFirstRole = firstRole;
+        mRoundNumber = 0;
+        mCurrentRole = firstRole;
     }
 
-    public static Match getMatch() {
-        if (match != null) {
-            return match;
-        }
-
-        return match = new Match();
-    }
-
-    public void resetMatch() {
-        match = new Match();
-
-        match.playerName = "";
-        match.opponentName = "";
-        match.winDifference = 0;
-        match.firstRole = null;
-        match.roundNumber = 0;
-        match.currentRole = null;
+    public int getCurrentRoundNumber() {
+        return mRoundNumber;
     }
 
     public Role getCurrentRole() {
-        return currentRole;
+        return mCurrentRole;
     }
 
-    public Match setWinDifference(int winDifference) {
-        this.winDifference = winDifference;
+    public String getPlayerName() {
+        return mPlayerName;
+    }
+
+    public String getOpponentName() {
+        return mOpponentName;
+    }
+
+    public int getWinDifference() {
+        return mWinDifference;
+    }
+
+    public Role getmCurrentRole() {
+        return mCurrentRole;
+    }
+
+    public int getCurrentDifference() {
+        return mCurrentDifference;
+    }
+
+    public List<Round> getmRounds() {
+        return mRounds;
+    }
+
+    public Match postRoundResult(Round round) {
+        mRounds.add(round);
+        calculateDifferentialFromRounds();
+        mRoundNumber += 1;
+        updateCurrentRole();
         return this;
     }
 
-    public Match setPlayerName(String playerName) {
-        this.playerName = playerName;
+    public Match deleteLastRoundResult() {
+        if (mRounds.size() > 0) {
+            mRounds.remove(mRounds.size() - 1);
+            calculateDifferentialFromRounds();
+            mRoundNumber -= 1;
+            updateCurrentRole();
+        }
         return this;
     }
 
-    public Match setOpponentName(String opponentName) {
-        this.opponentName = opponentName;
-        return this;
+    private void calculateDifferentialFromRounds() {
+        int diff = 0;
+
+        for (Round round : mRounds) {
+            if (round.getPlayerRole() == SPY) {
+                diff += round.getRoundScore();
+            } else {
+                diff -= round.getRoundScore();
+            }
+        }
+
+        mCurrentDifference = diff;
     }
 
-    public Match setFirstRole(Role role) {
-        currentRole = role;
-        return this;
-    }
-
-    private Role getRoleForRoundNumber(int roundNumber) {
-        if (roundNumber % 4 == 0 || roundNumber % 4 == 3) {
-            return firstRole;
+    private void updateCurrentRole() {
+        if (mRoundNumber % 4 == 0 || mRoundNumber % 4 == 3) {
+            mCurrentRole = mFirstRole;
         } else {
-            return Role.values()[(firstRole.ordinal() + 1) % 2];
+            mCurrentRole = Role.values()[(mFirstRole.ordinal() + 1) % 2];
         }
     }
 

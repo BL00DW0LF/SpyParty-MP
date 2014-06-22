@@ -17,15 +17,15 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".activities.ActivityMain"
+            android:name=".activities.ActivityMatch"
             android:label="@string/app_name" />
         <activity
             android:name=".activities.ActivityHelp"
             android:label="@string/title_activity_activity_help"
-            android:parentActivityName=".activities.ActivityMain" >
+            android:parentActivityName=".activities.ActivityMatch" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="ActivityMain" />
+                android:value="ActivityMatch" />
         </activity>
     </application>
 
