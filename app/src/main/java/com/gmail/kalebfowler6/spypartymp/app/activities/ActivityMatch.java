@@ -13,10 +13,16 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.gmail.kalebfowler6.spypartymp.app.R;
+import com.gmail.kalebfowler6.spypartymp.app.adapters.MatchHistoryAdapter;
 import com.gmail.kalebfowler6.spypartymp.app.models.Match;
 import com.gmail.kalebfowler6.spypartymp.app.models.Round;
 import com.gmail.kalebfowler6.spypartymp.app.views.CurrentDiffView;
 
+import java.util.ArrayList;
+
+import static android.view.View.INVISIBLE;
+import static android.view.View.OnClickListener;
+import static android.view.View.VISIBLE;
 import static android.widget.Toast.LENGTH_SHORT;
 import static com.gmail.kalebfowler6.spypartymp.app.models.Match.Role.SPY;
 
@@ -33,6 +39,7 @@ public class ActivityMatch extends BaseActivity {
 
     private Button mUndoButton;
     private EditText mRoundScore;
+    private MatchHistoryAdapter mAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,8 +58,12 @@ public class ActivityMatch extends BaseActivity {
         Button scoreButton = (Button) findViewById(R.id.scoreButton);
 
         // set view listeners, adapters etc.
+        mCurrentDiffView.setOnClickListener(diffViewListener);
         mUndoButton.setOnClickListener(undoButtonListener);
         scoreButton.setOnClickListener(scoreButtonListener);
+
+        mAdapter = new MatchHistoryAdapter(this, new ArrayList<Round>());
+        mMatchHistoryListView.setAdapter(mAdapter);
 
         fillDataFromMatch();
     }
@@ -76,7 +87,13 @@ public class ActivityMatch extends BaseActivity {
         mCurrentSpy.setText("Current Spy: " + (match.getCurrentRole() == SPY ? match.getPlayerName() : match.getOpponentName()));
         mCurrentDiffView.setScore(match.getCurrentDifference(), null);
 
-        mUndoButton.setEnabled(match.getCurrentRoundNumber() != 0);
+        mAdapter.clear();
+
+        for (Round round : match.getRounds()) {
+            mAdapter.add(round);
+        }
+
+        mUndoButton.setVisibility(match.getCurrentRoundNumber() == 0 ? INVISIBLE : VISIBLE);
 
         if (Math.abs(match.getCurrentDifference()) >= match.getWinDifference()) {
             String title = (match.getCurrentDifference() < 0 ? match.getOpponentName() : match.getPlayerName()) + " wins!";
@@ -103,13 +120,27 @@ public class ActivityMatch extends BaseActivity {
         }
     }
 
-    private View.OnClickListener scoreButtonListener = new android.view.View.OnClickListener() {
+    private OnClickListener diffViewListener = new OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            int n = mCurrentDiffView.getCurrentScoreSigned();
+            String s = n > 0 ? "You are " + n + " points ahead" : n < 0 ? "You are " + Math.abs(n) + " points behind" : "Match is tied";
+
+            Toast.makeText(ActivityMatch.this, s, LENGTH_SHORT).show();
+        }
+    };
+
+    private OnClickListener scoreButtonListener = new OnClickListener() {
         @Override
         public void onClick(View v) {
             String s = mRoundScore.getText().toString();
 
             if (s != null && s.trim().length() > 0) {
-                match.postRoundResult(new Round(match.getCurrentRole(), Integer.valueOf(mRoundScore.getText().toString())));
+                match.postRoundResult(new Round(
+                        match,
+                        match.getCurrentRole(),
+                        Integer.valueOf(mRoundScore.getText().toString()),
+                        match.getCurrentRoundNumber()));
             } else {
                 Toast.makeText(ActivityMatch.this, "No score entered", LENGTH_SHORT).show();
             }
@@ -118,7 +149,7 @@ public class ActivityMatch extends BaseActivity {
         }
     };
 
-    private View.OnClickListener undoButtonListener = new android.view.View.OnClickListener() {
+    private OnClickListener undoButtonListener = new OnClickListener() {
         @Override
         public void onClick(View v) {
             match.deleteLastRoundResult();

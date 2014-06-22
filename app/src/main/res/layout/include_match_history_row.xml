@@ -1,32 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="horizontal"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginLeft="15dp"
-    android:layout_marginRight="15dp"
-    android:layout_marginTop="3dp"
-    android:layout_marginBottom="3dp"
-    android:padding="5dp"
-    android:background="@drawable/outline_background">
+    android:paddingTop="1dp"
+    android:paddingBottom="1dp"
+    android:paddingLeft="2dp"
+    android:paddingRight="2dp">
 
-    <TextView
-        android:id="@+id/playerName"
-        android:layout_width="0dp"
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:layout_gravity="center_vertical"
-        android:textSize="18sp"
         android:padding="5dp"
-        android:text="r7stuart" />
+        android:background="@drawable/outline_background">
 
-    <com.gmail.kalebfowler6.spypartymp.app.views.RoundScoreView
-        android:id="@+id/roundScore"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_vertical"
-        android:textStyle="bold"
-        android:textSize="28sp" />
+        <TextView
+            android:id="@+id/playerName"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_gravity="center_vertical"
+            android:textSize="18sp"
+            android:padding="5dp"
+            android:text="r7stuart" />
 
-</LinearLayout>
+        <com.gmail.kalebfowler6.spypartymp.app.views.RoundScoreView
+            android:id="@+id/roundScore"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:textStyle="bold"
+            android:textSize="28sp" />
+
+    </LinearLayout>
+
+</FrameLayout>

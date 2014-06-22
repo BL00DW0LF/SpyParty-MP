@@ -32,21 +32,12 @@ public class RoundScoreView extends BaseScoreView {
 
     @Override
     public void setScore(int n, Role playerRole) {
-        if (n > 0) {
-            if (SPY == playerRole) {
-                setTextColor(getResources().getColor(R.color.score_green));
-            } else {
-                setTextColor(getResources().getColor(R.color.score_red));
-            }
-            setText(n);
-        } else if (n == 0) {
-            if (SPY == playerRole) {
-                setTextColor(getResources().getColor(R.color.score_red));
-            } else {
-                setTextColor(getResources().getColor(R.color.score_green));
-            }
-            setText(n);
+        if (SPY == playerRole) {
+            setTextColor(getResources().getColor(R.color.score_green));
+        } else {
+            setTextColor(getResources().getColor(R.color.score_red));
         }
+        setText(Integer.toString(n));
     }
 
 }

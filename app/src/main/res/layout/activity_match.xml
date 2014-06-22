@@ -42,18 +42,16 @@
 
     </RelativeLayout>
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="#999"
-        android:layout_marginBottom="10dp" />
-
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center_horizontal"
-        android:layout_marginBottom="10dp"
+        android:paddingBottom="10dp"
+        android:paddingTop="10dp"
         android:text="Match History"
+        android:layout_marginBottom="1dp"
+        android:textColor="#FFF"
+        android:background="#333"
         android:textSize="18sp"
         android:textStyle="bold" />
 
@@ -61,7 +59,9 @@
         android:id="@+id/matchHistoryListView"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1" />
+        android:layout_weight="1"
+        android:dividerHeight="0dp"
+        android:divider="@null" />
 
     <View
         android:layout_width="match_parent"
@@ -72,7 +72,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:padding="5dp">
+        android:padding="5dp"
+        android:background="#333">
 
         <Button
             android:id="@+id/undoButton"
@@ -89,11 +90,13 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:inputType="number"
-            android:paddingLeft="5dp"
-            android:paddingRight="5dp"
+            android:paddingLeft="15dp"
+            android:paddingRight="15dp"
             android:gravity="center"
             android:maxLines="1"
             android:singleLine="true"
+            android:textColor="#FFF"
+            android:textSize="22sp"
             android:maxLength="1" />
 
         <Button

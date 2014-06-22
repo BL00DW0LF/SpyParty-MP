@@ -1,25 +1,39 @@
 package com.gmail.kalebfowler6.spypartymp.app.models;
 
 import static com.gmail.kalebfowler6.spypartymp.app.models.Match.Role;
+import static com.gmail.kalebfowler6.spypartymp.app.models.Match.Role.SPY;
 
 /**
  * Created by stuart on 6/21/14.
  */
 public class Round {
 
-    private Role playerRole;
-    private int roundScore;
+    private String mSpyPlayer;
+    private Role mPlayerRole;
+    private int mRoundScore;
+    private int mRoundNumber;
 
-    public Round(Role playerRole, int roundScore) {
-        this.playerRole = playerRole;
-        this.roundScore = roundScore;
+    public Round(Match match, Role playerRole, int roundScore, int roundNumber) {
+        mPlayerRole = playerRole;
+        mRoundScore = roundScore;
+        mRoundNumber = roundNumber;
+
+        mSpyPlayer = mPlayerRole == SPY ? match.getPlayerName() : match.getOpponentName();
+    }
+
+    public String getSpyPlayer() {
+        return mSpyPlayer;
     }
 
     public Role getPlayerRole() {
-        return playerRole;
+        return mPlayerRole;
     }
 
     public int getRoundScore() {
-        return roundScore;
+        return mRoundScore;
+    }
+
+    public int getRoundNumber() {
+        return mRoundNumber;
     }
 }

@@ -3,8 +3,6 @@ package com.gmail.kalebfowler6.spypartymp.app.models;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.gmail.kalebfowler6.spypartymp.app.models.Match.Role.SPY;
-
 /**
  * Created by stuart on 6/21/14.
  */
@@ -43,7 +41,7 @@ public class Match {
         mOpponentName = opponentName;
         mWinDifference = winDifference;
         mFirstRole = firstRole;
-        mRoundNumber = 0;
+        mRoundNumber = 1;
         mCurrentRole = firstRole;
     }
 
@@ -67,15 +65,11 @@ public class Match {
         return mWinDifference;
     }
 
-    public Role getmCurrentRole() {
-        return mCurrentRole;
-    }
-
     public int getCurrentDifference() {
         return mCurrentDifference;
     }
 
-    public List<Round> getmRounds() {
+    public List<Round> getRounds() {
         return mRounds;
     }
 
@@ -101,7 +95,7 @@ public class Match {
         int diff = 0;
 
         for (Round round : mRounds) {
-            if (round.getPlayerRole() == SPY) {
+            if (round.getSpyPlayer().equalsIgnoreCase(mPlayerName)) {
                 diff += round.getRoundScore();
             } else {
                 diff -= round.getRoundScore();
@@ -112,7 +106,7 @@ public class Match {
     }
 
     private void updateCurrentRole() {
-        if (mRoundNumber % 4 == 0 || mRoundNumber % 4 == 3) {
+        if (mRoundNumber % 4 == 0 || mRoundNumber % 4 == 1) {
             mCurrentRole = mFirstRole;
         } else {
             mCurrentRole = Role.values()[(mFirstRole.ordinal() + 1) % 2];

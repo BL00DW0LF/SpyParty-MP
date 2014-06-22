@@ -12,6 +12,8 @@ import static com.gmail.kalebfowler6.spypartymp.app.models.Match.Role;
  */
 public class CurrentDiffView extends BaseScoreView {
 
+    private int mCurrentScoreSigned = 0;
+
     public CurrentDiffView(Context context) {
         super(context);
     }
@@ -32,6 +34,8 @@ public class CurrentDiffView extends BaseScoreView {
 
     @Override
     public void setScore(int n, Role playerRole) {
+        mCurrentScoreSigned = n;
+
         if (n < 0) {
             setBackgroundResource(R.drawable.red_circle);
             setText(Integer.toString(Math.abs(n)));
@@ -44,4 +48,7 @@ public class CurrentDiffView extends BaseScoreView {
         }
     }
 
+    public int getCurrentScoreSigned() {
+        return mCurrentScoreSigned;
+    }
 }
