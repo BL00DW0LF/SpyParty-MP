@@ -160,7 +160,7 @@ public class ActivitySetup extends BaseActivity implements OnSharedPreferenceCha
     }
 
     private void restoreWinPoints() {
-        int storedWinPoints = mPrefs.getInt(WIN_POINTS_KEY, 15);
+        int storedWinPoints = mPrefs.getInt(WIN_POINTS_KEY, 7);
         mWinPoints.setText(Integer.toString(storedWinPoints));
 
         if (0 != storedWinPoints) {
