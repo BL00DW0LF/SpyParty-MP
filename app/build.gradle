@@ -2,9 +2,9 @@ apply plugin: 'android'
 
 android {
     compileSdkVersion 19
-    buildToolsVersion '19.0.0'
+    buildToolsVersion '19.1.0'
     defaultConfig {
-        packageName 'com.gmail.kalebfowler6.spypartymp.app'
+        applicationId 'com.gmail.kalebfowler6.spypartymp.app'
         minSdkVersion 9
         targetSdkVersion 19
         versionCode 1

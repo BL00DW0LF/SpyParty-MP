@@ -12,8 +12,10 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.ToggleButton;
 
 import com.gmail.kalebfowler6.spypartymp.app.R;
+import com.gmail.kalebfowler6.spypartymp.app.models.Match;
 import com.gmail.kalebfowler6.spypartymp.app.utils.SettingsHelper;
 
 import java.util.ArrayList;
@@ -21,6 +23,8 @@ import java.util.HashSet;
 
 import static android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import static android.widget.Toast.LENGTH_SHORT;
+import static com.gmail.kalebfowler6.spypartymp.app.models.Match.Role.SNIPER;
+import static com.gmail.kalebfowler6.spypartymp.app.models.Match.Role.SPY;
 
 /**
  * Created by stuart on 6/20/14.
@@ -28,11 +32,12 @@ import static android.widget.Toast.LENGTH_SHORT;
 public class ActivitySetup extends BaseActivity implements OnSharedPreferenceChangeListener {
 
     public static final String TAG = "ActivitySetup";
-    public static final String INITIALIZED_MATCH = "Initialized Match";
 
+    private View mRootViewGroup;
     private EditText mPlayerName;
     private AutoCompleteTextView mOpponentName;
     private EditText mWinPoints;
+    private ToggleButton mRoleButton;
 
     private ArrayList<String> mSavedOpponentNames = new ArrayList<String>();
     private ArrayAdapter<String> mOpponentNamesAdapter;
@@ -44,9 +49,11 @@ public class ActivitySetup extends BaseActivity implements OnSharedPreferenceCha
         setContentView(R.layout.activity_setup);
 
         // get view references
+        mRootViewGroup = findViewById(R.id.rootViewGroup);
         mPlayerName = (EditText) findViewById(R.id.playerName);
         mOpponentName = (AutoCompleteTextView) findViewById(R.id.opponentName);
         mWinPoints = (EditText) findViewById(R.id.winPoints);
+        mRoleButton = (ToggleButton) findViewById(R.id.role);
         Button startMatch = (Button) findViewById(R.id.startMatch);
 
         // set view listeners, adapters etc.
@@ -65,6 +72,8 @@ public class ActivitySetup extends BaseActivity implements OnSharedPreferenceCha
         super.onResume();
         restorePlayerName();
         restoreOpponentNames();
+        restoreWinPoints();
+        mRootViewGroup.requestFocus();
     }
 
     private View.OnClickListener startMatchClickListener = new View.OnClickListener() {
@@ -74,15 +83,15 @@ public class ActivitySetup extends BaseActivity implements OnSharedPreferenceCha
 
                 savePlayerName();
                 saveOpponentName();
+                saveWinPoints();
 
-//                Match match = Match.getMatch()
-//                        .setPlayerName(mPlayerName.getText().toString())
-//                        .setOpponentName(mOpponentName.getText().toString())
-//                        .setWinDifference(0)
-//                        .setFirstRole(SPY);
+                Match.reInitializeMatch(
+                        mPlayerName.getText().toString(),
+                        mOpponentName.getText().toString(),
+                        Integer.valueOf(mWinPoints.getText().toString()),
+                        mRoleButton.isChecked() ? SNIPER : SPY);
 
                 Intent intent = new Intent(ActivitySetup.this, ActivityMatch.class);
-//            intent.putExtra(INITIALIZED_MATCH, match);
                 startActivity(intent);
 
             } else {
@@ -118,6 +127,15 @@ public class ActivitySetup extends BaseActivity implements OnSharedPreferenceCha
         }
     }
 
+    private void saveWinPoints() {
+        int enteredPoints = Integer.valueOf(mWinPoints.getText().toString().trim());
+
+        if (enteredPoints > 0) {
+            mPrefs.edit().putInt(WIN_POINTS_KEY, enteredPoints).commit();
+            Log.d(TAG, "Saving win points: " + enteredPoints);
+        }
+    }
+
     private void restorePlayerName() {
         String storedPlayerName = mPrefs.getString(PLAYER_NAME_KEY, "");
         mPlayerName.setText(storedPlayerName);
@@ -138,6 +156,15 @@ public class ActivitySetup extends BaseActivity implements OnSharedPreferenceCha
             mOpponentNamesAdapter.addAll(mSavedOpponentNames);
 
             Log.d(TAG, "Loaded opponent names: " + mSavedOpponentNames);
+        }
+    }
+
+    private void restoreWinPoints() {
+        int storedWinPoints = mPrefs.getInt(WIN_POINTS_KEY, 15);
+        mWinPoints.setText(Integer.toString(storedWinPoints));
+
+        if (0 != storedWinPoints) {
+            Log.d(TAG, "Loaded win points: " + storedWinPoints);
         }
     }
 

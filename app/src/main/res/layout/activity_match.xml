@@ -49,7 +49,6 @@
         android:paddingBottom="10dp"
         android:paddingTop="10dp"
         android:text="Match History"
-        android:layout_marginBottom="1dp"
         android:textColor="#FFF"
         android:background="#333"
         android:textSize="18sp"
@@ -61,7 +60,9 @@
         android:layout_height="0dp"
         android:layout_weight="1"
         android:dividerHeight="0dp"
-        android:divider="@null" />
+        android:divider="@null"
+        android:scrollbars="none"
+        android:overScrollMode="never" />
 
     <View
         android:layout_width="match_parent"
@@ -72,15 +73,17 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:padding="5dp"
+        android:gravity="center_vertical"
+        android:padding="3dp"
         android:background="#333">
 
-        <Button
+        <TextView
             android:id="@+id/undoButton"
-            android:layout_width="0dp"
+            android:layout_width="100dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
+            android:gravity="center"
             android:text="Undo"
+            android:padding="10dp"
             android:textColor="#FFF"
             android:background="@drawable/gray_button"/>
 
@@ -99,11 +102,12 @@
             android:textSize="22sp"
             android:maxLength="1" />
 
-        <Button
+        <TextView
             android:id="@+id/scoreButton"
-            android:layout_width="0dp"
+            android:layout_width="100dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
+            android:padding="10dp"
+            android:gravity="center"
             android:text="Score"
             android:textColor="#FFF"
             android:background="@drawable/green_button"/>

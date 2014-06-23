@@ -20,6 +20,7 @@ public class BaseActivity extends ActionBarActivity {
 
     public static final String PLAYER_NAME_KEY = "Player Name";
     public static final String OPPONENT_NAMES_KEY = "Opponent Names";
+    public static final String WIN_POINTS_KEY = "Win Points";
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -43,8 +44,9 @@ public class BaseActivity extends ActionBarActivity {
                         public void onClick(DialogInterface dialog, int which) {
                             getSharedPreferences(SettingsHelper.SHARED_PREFS_FILE_KEY, MODE_PRIVATE)
                                     .edit()
-                                    .remove(OPPONENT_NAMES_KEY)
                                     .remove(PLAYER_NAME_KEY)
+                                    .remove(OPPONENT_NAMES_KEY)
+                                    .remove(WIN_POINTS_KEY)
                                     .commit();
 
                             Toast.makeText(BaseActivity.this, "Saved player names deleted", LENGTH_SHORT).show();

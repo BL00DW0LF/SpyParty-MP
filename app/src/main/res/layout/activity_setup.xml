@@ -6,6 +6,7 @@
     android:background="#FFF">
 
     <LinearLayout
+        android:id="@+id/rootViewGroup"
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -73,7 +74,7 @@
             android:text="Select your starting role:" />
 
         <ToggleButton
-            android:id="@+id/spyRole"
+            android:id="@+id/role"
             android:layout_width="160dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"

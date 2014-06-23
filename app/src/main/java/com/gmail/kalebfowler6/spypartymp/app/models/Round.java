@@ -13,10 +13,12 @@ public class Round {
     private int mRoundScore;
     private int mRoundNumber;
 
-    public Round(Match match, Role playerRole, int roundScore, int roundNumber) {
+    public Round(Role playerRole, int roundScore, int roundNumber) {
         mPlayerRole = playerRole;
         mRoundScore = roundScore;
         mRoundNumber = roundNumber;
+
+        Match match = Match.getMatch();
 
         mSpyPlayer = mPlayerRole == SPY ? match.getPlayerName() : match.getOpponentName();
     }

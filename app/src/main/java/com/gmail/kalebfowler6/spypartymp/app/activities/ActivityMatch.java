@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -20,9 +19,7 @@ import com.gmail.kalebfowler6.spypartymp.app.views.CurrentDiffView;
 
 import java.util.ArrayList;
 
-import static android.view.View.INVISIBLE;
 import static android.view.View.OnClickListener;
-import static android.view.View.VISIBLE;
 import static android.widget.Toast.LENGTH_SHORT;
 import static com.gmail.kalebfowler6.spypartymp.app.models.Match.Role.SPY;
 
@@ -31,13 +28,14 @@ import static com.gmail.kalebfowler6.spypartymp.app.models.Match.Role.SPY;
  */
 public class ActivityMatch extends BaseActivity {
 
-    private Match match = new Match("r7stuart", "virifaux", 10, SPY);
+    private Match mMatch;
+
     private TextView mRoundNumber;
     private TextView mCurrentSpy;
     private CurrentDiffView mCurrentDiffView;
     private ListView mMatchHistoryListView;
 
-    private Button mUndoButton;
+    private TextView mUndoButton;
     private EditText mRoundScore;
     private MatchHistoryAdapter mAdapter;
 
@@ -46,16 +44,17 @@ public class ActivityMatch extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_match);
 
-//        Match match = (Match) getIntent().getParcelableExtra(ActivitySetup.INITIALIZED_MATCH);
+        // get reference to static match instance
+        mMatch = Match.getMatch();
 
         // get view references
         mRoundNumber = (TextView) findViewById(R.id.roundNumber);
         mCurrentSpy = (TextView) findViewById(R.id.currentSpy);
         mCurrentDiffView = (CurrentDiffView) findViewById(R.id.differential);
         mMatchHistoryListView = (ListView) findViewById(R.id.matchHistoryListView);
-        mUndoButton = (Button) findViewById(R.id.undoButton);
+        mUndoButton = (TextView) findViewById(R.id.undoButton);
         mRoundScore = (EditText) findViewById(R.id.roundScore);
-        Button scoreButton = (Button) findViewById(R.id.scoreButton);
+        TextView scoreButton = (TextView) findViewById(R.id.scoreButton);
 
         // set view listeners, adapters etc.
         mCurrentDiffView.setOnClickListener(diffViewListener);
@@ -64,7 +63,11 @@ public class ActivityMatch extends BaseActivity {
 
         mAdapter = new MatchHistoryAdapter(this, new ArrayList<Round>());
         mMatchHistoryListView.setAdapter(mAdapter);
+    }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
         fillDataFromMatch();
     }
 
@@ -74,7 +77,10 @@ public class ActivityMatch extends BaseActivity {
                 .setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
                     @Override
                     public boolean onMenuItemClick(MenuItem item) {
-                        Toast.makeText(ActivityMatch.this, "Reset match here", LENGTH_SHORT).show();
+                        for (int n = mMatch.getRounds().size() - 1; n >= 0; n--) {
+                            mMatch.deleteLastRoundResult();
+                        }
+                        fillDataFromMatch();
                         return true;
                     }
                 });
@@ -83,23 +89,24 @@ public class ActivityMatch extends BaseActivity {
     }
 
     private void fillDataFromMatch() {
-        mRoundNumber.setText("Round Number: " + match.getCurrentRoundNumber());
-        mCurrentSpy.setText("Current Spy: " + (match.getCurrentRole() == SPY ? match.getPlayerName() : match.getOpponentName()));
-        mCurrentDiffView.setScore(match.getCurrentDifference(), null);
+        mRoundNumber.setText("Round Number: " + mMatch.getCurrentRoundNumber());
+        mCurrentSpy.setText("Current Spy: " + (mMatch.getCurrentRole() == SPY ? mMatch.getPlayerName() : mMatch.getOpponentName()));
+        mCurrentDiffView.setScore(mMatch.getCurrentDifference(), null);
 
         mAdapter.clear();
 
-        for (Round round : match.getRounds()) {
+        for (Round round : mMatch.getRounds()) {
             mAdapter.add(round);
         }
 
-        mUndoButton.setVisibility(match.getCurrentRoundNumber() == 0 ? INVISIBLE : VISIBLE);
+        mUndoButton.setEnabled(mMatch.getCurrentRoundNumber() != 1);
 
-        if (Math.abs(match.getCurrentDifference()) >= match.getWinDifference()) {
-            String title = (match.getCurrentDifference() < 0 ? match.getOpponentName() : match.getPlayerName()) + " wins!";
+        if ((mMatch.getCurrentRoundNumber() - 1) % 2 == 0 && Math.abs(mMatch.getCurrentDifference()) >= mMatch.getWinDifference()) {
+            String title = (mMatch.getCurrentDifference() < 0 ? mMatch.getOpponentName() : mMatch.getPlayerName()) + " wins!";
 
             new AlertDialog.Builder(this)
                     .setTitle(title)
+                    .setCancelable(false)
                     .setPositiveButton("New Match", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
@@ -109,14 +116,13 @@ public class ActivityMatch extends BaseActivity {
                     .setNegativeButton("Undo", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            match.deleteLastRoundResult();
+                            mMatch.deleteLastRoundResult();
                             fillDataFromMatch();
                         }
                     })
                     .show();
         } else {
             mRoundScore.setText("");
-            mRoundScore.requestFocus();
         }
     }
 
@@ -136,11 +142,10 @@ public class ActivityMatch extends BaseActivity {
             String s = mRoundScore.getText().toString();
 
             if (s != null && s.trim().length() > 0) {
-                match.postRoundResult(new Round(
-                        match,
-                        match.getCurrentRole(),
+                mMatch.postRoundScore(new Round(
+                        mMatch.getCurrentRole(),
                         Integer.valueOf(mRoundScore.getText().toString()),
-                        match.getCurrentRoundNumber()));
+                        mMatch.getCurrentRoundNumber()));
             } else {
                 Toast.makeText(ActivityMatch.this, "No score entered", LENGTH_SHORT).show();
             }
@@ -152,7 +157,7 @@ public class ActivityMatch extends BaseActivity {
     private OnClickListener undoButtonListener = new OnClickListener() {
         @Override
         public void onClick(View v) {
-            match.deleteLastRoundResult();
+            mMatch.deleteLastRoundResult();
             fillDataFromMatch();
         }
     };

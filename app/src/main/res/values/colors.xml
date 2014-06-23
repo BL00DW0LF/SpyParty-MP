@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+    <color name="white">#FFF</color>
+    <color name="light_gray">#DDD</color>
     <color name="score_red">#C00</color>
     <color name="score_green">#090</color>
     <color name="score_gray">#666</color>

@@ -40,6 +40,7 @@ public class MatchHistoryAdapter extends ArrayAdapter<Round> {
             convertView = LayoutInflater.from(getContext()).inflate(R.layout.include_match_history_row, parent, false);
 
             holder = new ViewHolder();
+            holder.rootView = convertView.findViewById(R.id.rootView);
             holder.playerName = (TextView) convertView.findViewById(R.id.playerName);
             holder.roundScore = (RoundScoreView) convertView.findViewById(R.id.roundScore);
 
@@ -50,13 +51,20 @@ public class MatchHistoryAdapter extends ArrayAdapter<Round> {
 
         Round round = getItem(position);
 
-        holder.playerName.setText(round.getRoundNumber() + ". " + round.getSpyPlayer());
+        holder.playerName.setText(round.getRoundNumber() + ". Spy: " + round.getSpyPlayer());
         holder.roundScore.setScore(round.getRoundScore(), round.getPlayerRole());
+
+        if ((getCount() - position - 1) % 4 <= 1) {
+            holder.rootView.setBackgroundColor(getContext().getResources().getColor(R.color.white));
+        } else {
+            holder.rootView.setBackgroundColor(getContext().getResources().getColor(R.color.light_gray));
+        }
 
         return convertView;
     }
 
     private class ViewHolder {
+        private View rootView;
         private TextView playerName;
         private RoundScoreView roundScore;
     }
