@@ -1,15 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.gmail.kalebfowler6.spypartymp.app" >
+    package="com.gmail.kalebfowler6.spypartymp.app">
 
     <application
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@style/AppTheme" >
+        android:theme="@style/AppTheme">
         <activity
-            android:name=".ActivityMain"
-            android:label="@string/app_name" >
+            android:name=".activities.ActivitySetup"
+            android:label="@string/app_name"
+            android:windowSoftInputMode="stateAlwaysHidden|adjustResize">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -17,12 +18,17 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".ActivityHelp"
+            android:name=".activities.ActivityMatch"
+            android:label="@string/app_name"
+            android:windowSoftInputMode="stateAlwaysHidden|adjustResize" />
+        <activity
+            android:name=".activities.ActivityHelp"
             android:label="@string/title_activity_activity_help"
-            android:parentActivityName=".ActivityMain" >
+            android:parentActivityName=".activities.ActivityMatch"
+            android:windowSoftInputMode="stateAlwaysHidden|adjustResize">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="ActivityMain" />
+                android:value="ActivityMatch" />
         </activity>
     </application>
 
