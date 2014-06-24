@@ -38,10 +38,10 @@ public class CurrentDiffView extends BaseScoreView {
 
         if (n < 0) {
             setBackgroundResource(R.drawable.red_circle);
-            setText(Integer.toString(Math.abs(n)));
+            setText(Integer.toString(n));
         } else if (n > 0) {
             setBackgroundResource(R.drawable.green_circle);
-            setText(Integer.toString(n));
+            setText("+"+Integer.toString(n));
         } else {
             setBackgroundResource(R.drawable.gray_circle);
             setText("0");
